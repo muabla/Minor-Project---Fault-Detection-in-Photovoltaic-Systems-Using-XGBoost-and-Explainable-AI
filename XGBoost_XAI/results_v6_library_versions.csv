@@ -1,0 +1,7 @@
+,System 1,System 2,System 3
+v6a zero-shot,0.941,0.741,0.891
+v6a after 5 readings,0.971,0.929,0.916
+v6b zero-shot,0.951,0.915,0.963
+v6b after 5 readings,0.968,0.935,0.968
+v6c (final) zero-shot,0.967,0.98,0.983
+v6c (final) after 5 readings,0.974,0.992,0.991
