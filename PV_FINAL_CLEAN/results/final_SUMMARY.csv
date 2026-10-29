@@ -1,0 +1,8 @@
+model,"S1 sim (realistic, I-V, hi-res)",S1 paper (real),S2 sim zero-shot,S2 sim zero-shot +Isc/G,S2 sim few-shot k=5,S2 sim few-shot k=5 +Isc/G
+ANN (tuned),0.974,0.983,0.696,,0.9091891891891892,
+DT (paper),0.958,0.93,0.695,0.775,0.785,0.945
+LR (paper),0.976,0.787,0.8,0.8,0.965,0.969
+RF (paper),0.974,0.957,0.785,0.805,0.936,0.973
+SVM (paper),0.968,0.977,0.66,0.895,0.962,0.965
+SVM (tuned),0.972,0.977,0.805,0.8,0.965,0.966
+XGBoost (tuned),0.972,,0.8,0.805,0.907,0.995

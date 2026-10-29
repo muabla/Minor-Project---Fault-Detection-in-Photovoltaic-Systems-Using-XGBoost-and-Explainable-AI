@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PV Fault Testbed</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --bg:#eef1f5; --card:#ffffff; --ink:#1b2430; --muted:#5d6b7c; --line:#d5dce5;
+  --accent:#1f5fbf; --accent-soft:#e3ecfb; --cell:#1d3f78; --cell2:#24508f; --frame:#9aa7b6;
+  --ok:#1f9d55; --warn:#d99a00; --orange:#e06c00; --bad:#d23a3a;
+  --wire:#1f3a93; --comp:#8b1a1a; --grid:#e8edf3; --paper:#fbfcfe;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:10px 18px;background:#0f1b2d;color:#fff;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;font-weight:650;letter-spacing:.2px}
+header .sub{color:#9fb3cc;font-size:12px}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{background:#1c2d47;color:#cfe0f5;border:1px solid #2b4366;border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:600}
+.tab.on{background:#2f6fd6;border-color:#2f6fd6;color:#fff}
+.tab small{display:block;font-weight:400;font-size:11px;opacity:.8}
+main{display:grid;grid-template-columns:280px minmax(0,1fr) 360px;gap:12px;padding:12px}
+@media (max-width:1250px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 10px}
+label{display:block;font-size:12px;color:var(--muted);margin:8px 0 3px}
+input[type=range]{width:100%}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+button{font:inherit;border:1px solid var(--line);background:#f7f9fc;border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--ink)}
+button:hover{border-color:var(--accent)}
+button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:650;width:100%;padding:11px;font-size:15px}
+button.primary:disabled{opacity:.6;cursor:wait}
+.locked{opacity:.35!important;cursor:not-allowed!important;pointer-events:none}
+button.danger{border-color:#e4b4b4;color:#9b2222}
+.tool{display:flex;align-items:center;gap:8px;width:100%;text-align:left;margin-bottom:6px}
+.tool .ico{width:26px;height:20px;flex:none}
+.hint{font-size:12px;color:var(--muted);margin:6px 0 0}
+.val{float:right;color:var(--ink);font-weight:600}
+#panelWrap{position:relative;background:#cfd8e3;border-radius:10px;overflow:hidden;user-select:none;touch-action:none}
+#panelSvg{display:block;width:100%;height:auto}
+#cover{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#2a3547,#2a3547 12px,#303c50 12px,#303c50 24px);
+  display:none;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:650;text-align:center}
+#circuitSvg{display:block;width:100%;height:auto;background:var(--paper);border-radius:10px;border:1px solid var(--line)}
+.pred{font-size:24px;font-weight:750;margin:2px 0 4px}
+.pred.c0{color:var(--ok)} .pred.c1,.pred.c2{color:var(--warn)} .pred.c3,.pred.c4{color:var(--bad)} .pred.c5{color:var(--orange)}
+.bars .b{display:grid;grid-template-columns:110px 1fr 44px;gap:6px;align-items:center;font-size:12px;margin:3px 0}
+.bars .t{height:10px;background:#edf1f6;border-radius:6px;overflow:hidden}
+.bars .f{height:100%;background:var(--accent);border-radius:6px;transition:width .5s}
+.shap .s{display:grid;grid-template-columns:1fr 120px;gap:8px;align-items:center;font-size:12px;margin:4px 0}
+.shap .axis{position:relative;height:12px;background:linear-gradient(90deg,transparent calc(50% - 1px),#aab5c3 calc(50% - 1px),#aab5c3 calc(50% + 1px),transparent calc(50% + 1px))}
+.shap .bar{position:absolute;top:1px;height:10px;border-radius:3px}
+.warn{background:#fff6e0;border:1px solid #f0d58a;color:#7a5600;border-radius:8px;padding:7px 9px;font-size:12px;margin-top:8px}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.chip{display:inline-block;background:#eef3fb;border:1px solid #cddcf3;color:#2a4f8a;border-radius:20px;padding:3px 10px;font-size:12px}
+.steps div{font-size:13px;margin:4px 0;color:var(--muted)} .steps div.done{color:var(--ink)}
+.big{font-size:22px;font-weight:750}
+.kv{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12px}
+.kv span:nth-child(even){font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+#ivSvg{width:100%;height:auto;display:block}
+.legend{font-size:11px;color:var(--muted)}
+.flow{stroke-dasharray:6 6;animation:flow .6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-12}}
+.buzz{animation:buzz .15s linear infinite}
+@keyframes buzz{0%{transform:translateX(0)}50%{transform:translateX(1.5px)}100%{transform:translateX(0)}}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0f1b2d;color:#fff;padding:9px 14px;border-radius:8px;display:none;z-index:9}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>PV Fault Detection — Virtual Testbed</h1>
+    <div class="sub">XGBoost + SHAP · simulated I-V tracer measurements · 6 classes: normal, shading, dirt, open circuit, short circuit, degradation</div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</header>
+
+<main>
+<!-- ============ LEFT: tools ============ -->
+<section>
+  <div class="card">
+    <h2>Weather</h2>
+    <label>Irradiance <span class="val" id="gVal"></span></label>
+    <input type="range" id="gIn" min="250" max="1000" step="10" value="800">
+    <label>Ambient temperature <span class="val" id="tVal"></span></label>
+    <input type="range" id="tIn" min="15" max="40" step="0.5" value="25">
+    <div id="cfgBox" style="display:none">
+      <label>System 1 wiring</label>
+      <div class="row"><button id="cfgS" class="on">Series</button><button id="cfgP">Parallel</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Non-electrical faults</h2>
+    <div class="hint" style="margin:0 0 8px">Drag an object onto the panels. Scroll on it to resize, double-click to remove.</div>
+    <div class="hint" style="margin:0 0 8px;background:#eef3fb;border-radius:6px;padding:6px 8px"><b>For a clear demo</b> (detection thresholds): shadow over ≥ 3 substrings (≥ 5 % of the string) · dust ≥ 5 % · ≥ 2 shorted diodes · resistance ≥ 10 %. Smaller faults lose only a few % of power and are treated as normal variation.</div>
+    <button class="tool" data-add="leaf"><svg class="ico" viewBox="0 0 26 20"><ellipse cx="13" cy="10" rx="8" ry="6" fill="#3b3b3b" opacity=".55"/></svg>Leaf / bird shadow</button>
+    <button class="tool" data-add="pole"><svg class="ico" viewBox="0 0 26 20"><rect x="2" y="7" width="22" height="6" fill="#3b3b3b" opacity=".55"/></svg>Pole / wire shadow</button>
+    <button class="tool" data-add="tree"><svg class="ico" viewBox="0 0 26 20"><ellipse cx="13" cy="10" rx="12" ry="9" fill="#3b3b3b" opacity=".55"/></svg>Tree shadow</button>
+    <button class="tool" data-add="wall"><svg class="ico" viewBox="0 0 26 20"><rect x="3" y="3" width="20" height="14" fill="#3b3b3b" opacity=".55"/></svg>Wall / chimney shadow</button>
+    <label>Dust film on all panels <span class="val" id="dustVal"></span></label>
+    <input type="range" id="dustIn" min="0" max="20" step="1" value="0">
+    <div class="row" style="margin-top:6px">
+      <button id="realDust">Realistic dirt pattern</button>
+      <button id="mudBtn">Mud blotch tool</button>
+    </div>
+    <div class="row" style="margin-top:6px"><button id="cleanBtn">Clean panels</button></div>
+  </div>
+
+  <div class="card" id="elecCard">
+    <h2>Electrical faults</h2>
+    <label>Open circuit (cut a wire)</label>
+    <div class="row" id="cutRow"></div>
+    <label>Short circuit</label>
+    <button id="shortBtn" class="tool"><svg class="ico" viewBox="0 0 26 20"><path d="M14 1 6 11h6l-2 8 9-11h-6z" fill="#d23a3a"/></svg>Short tool: click a <span id="shortWhat">module</span></button>
+    <label>Corroded connector (extra resistance) <span class="val" id="rVal"></span></label>
+    <input type="range" id="rIn" min="0" max="50" step="1" value="0">
+    <div class="row" id="rBranchRow" style="margin-top:4px"></div>
+    <div class="row" style="margin-top:8px"><button id="repairBtn">Repair all</button></div>
+  </div>
+</section>
+
+<!-- ============ CENTER: panels + circuit ============ -->
+<section>
+  <div class="card">
+    <h2 id="sysName">PV array</h2>
+    <div id="panelWrap">
+      <svg id="panelSvg"></svg>
+      <div id="cover">Hidden fault applied<br><span style="font-size:13px;font-weight:400">Measure, then reveal what it was</span></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="primary" id="measureBtn" style="flex:2">Measure &amp; diagnose</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button id="hiddenBtn">Hidden fault (random)</button>
+      <button id="revealBtn" disabled>Reveal</button>
+      <button id="exportBtn">Export reading</button>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <button id="matCmdBtn" title="Copy a MATLAB command that re-simulates this exact fault in Simulink/Simscape">Copy MATLAB command</button>
+      <button id="matWebBtn" title="Copy this website reading as a MATLAB variable (for compare_with_website)">Copy website values</button>
+      <button id="matInBtn" title="Copy the 22 model inputs as a MATLAB command (backup)">Copy 22 inputs</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Circuit — components, wiring and live Raspberry Pi pin states</h2>
+    <svg id="circuitSvg" viewBox="0 0 1000 600"></svg>
+    <div class="note" id="tripInfo" style="margin-top:6px"></div>
+    <div class="row" style="margin-top:6px"><button id="resetPiBtn">Press RESET button (GPIO26)</button></div>
+  </div>
+  <div class="card">
+    <h2>Raspberry Pi program — what it did this cycle</h2>
+    <div class="note" style="margin:0 0 6px">Every bus transaction made by <code>pi_monitor.py</code> (I2C, 1-Wire, UART, GPIO) during the last measurement:</div>
+    <pre id="piLog" style="font-size:11px;background:#0f172a;color:#cbd5e1;padding:10px;border-radius:8px;max-height:220px;overflow:auto;white-space:pre-wrap;margin:0"></pre>
+  </div>
+</section>
+
+<!-- ============ RIGHT: results ============ -->
+<section>
+  <div class="card">
+    <h2>Diagnosis</h2>
+    <div id="predBox"><div class="note">Set up a scenario and press <b>Measure &amp; diagnose</b>.</div></div>
+  </div>
+  <div class="card">
+    <h2>I-V curve <span class="legend">— measured · - - healthy array, same weather</span></h2>
+    <svg id="ivSvg" viewBox="0 0 340 220"></svg>
+    <div class="kv" id="readBox"></div>
+  </div>
+  <div class="card">
+    <h2>Why? (SHAP)</h2>
+    <div id="shapBox" class="note">Contributions of each input to the predicted class appear here.</div>
+  </div>
+  <div class="card" id="commCard">
+    <h2>Model for this system</h2>
+    <div id="modelDesc" class="chip"></div>
+    <div id="commBody"></div>
+  </div>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+let CLASSES=["normal","partial shading","dirt","open circuit","short circuit","degradation"];
+const SHADOW_T=0.5, MUD_T=0.25;
+const S={system:1,config:"series",G:800,Ta:25,layout:null,shadows:[],dustFilm:0,dustMap:null,mud:[],shorts:new Set(),
+  open:null,rfrac:0,rbranch:0,hidden:null,revealed:false,mode:null,last:null,cells:[],status:null,busy:false};
+const $=id=>document.getElementById(id);
+const api=async(path,body)=>{const r=await fetch(path,body?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{});
+  if(!r.ok) throw new Error(await r.text()); return r.json();};
+const toast=t=>{const e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",2600)};
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e};
+
+/* ---------------- tabs ---------------- */
+const SYS_SHORT={1:["System 1","2 × 10 W"],2:["System 2","7 × 200 W"],3:["System 3","10 × 330 W"]};
+function drawTabs(){
+  const t=$("tabs"); t.innerHTML="";
+  for(const s of [1,2,3]){
+    const b=document.createElement("button"); b.className="tab"+(S.system==s?" on":"");
+    const ad=S.status&&S.status.adapted[s]; b.innerHTML=`${SYS_SHORT[s][0]} ${ad?"✓":""}<small>${SYS_SHORT[s][1]}</small>`;
+    b.onclick=()=>selectSystem(s); t.appendChild(b);
+  }
+}
+async function selectSystem(s){
+  S.system=s; if(s!=1) S.config="series";
+  clearAll(false); await loadLayout(); drawTabs(); await refreshStatus();
+}
+async function loadLayout(){
+  S.layout=await api(`/api/layout?system=${S.system}&config=${S.config}`);
+  $("sysName").textContent=S.layout.name;
+  $("cfgBox").style.display=S.system==1?"block":"none";
+  $("cfgS").classList.toggle("on",S.config=="series"); $("cfgP").classList.toggle("on",S.config=="parallel");
+  $("shortWhat").textContent=S.layout.branches[0][0].n_bypass?"bypass-diode substring":"module";
+  // weather sliders = the range this system's training data covers
+  const E=S.layout.env; $("gIn").min=E.G[0]; $("gIn").max=E.G[1]; $("tIn").min=E.Ta[0]; $("tIn").max=E.Ta[1];
+  S.G=Math.round(Math.min(Math.max(S.G,E.G[0]),E.G[1])); S.Ta=+Math.min(Math.max(S.Ta,E.Ta[0]),E.Ta[1]).toFixed(1); $("gIn").value=S.G; $("tIn").value=S.Ta;
+  // per-system dust range = range used in the training data
+  S.dustFilm=+$("dustIn").value;
+  buildPanel(); drawCutRow(); updateLabels(); drawCircuit(await api(`/api/hw?system=${S.system}`));
+}
+
+/* ---------------- panel geometry ---------------- */
+function buildPanel(){
+  const svg=$("panelSvg"); svg.innerHTML=""; S.cells=[];
+  const br=S.layout.branches; const W=900, pad=18, mgap=10, rowGap=34;
+  const maxMods=Math.max(...br.map(b=>b.length));
+  const m0=br[0][0]; const C=m0.cols,R=m0.rows;
+  let cs=Math.floor((W-2*pad-90-(maxMods-1)*mgap-6*maxMods)/(maxMods*C)); cs=Math.min(cs,24);
+  const modW=C*cs+6, modH=R*cs+6;
+  const H=pad*2+br.length*modH+(br.length-1)*rowGap+20;
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  el("rect",{x:0,y:0,width:W,height:H,fill:"#cdd7e2"},svg);
+  S.geom={cs,modW,modH,pad,W,H};
+  let flat=0;
+  br.forEach((mods,bi)=>{
+    const y0=pad+bi*(modH+rowGap);
+    const totalW=mods.length*modW+(mods.length-1)*mgap; const x0=pad+Math.max(0,(W-2*pad-90-totalW)/2);
+    // string wire
+    const wy=y0+modH+10;
+    el("line",{x1:x0+modW/2,y1:wy,x2:x0+totalW+14,y2:wy,stroke:"#555",["stroke-width"]:2},svg);
+    const lab=el("text",{x:x0+totalW+20,y:wy+4,"font-size":12,fill:"#333"},svg); lab.textContent=br.length>1?(S.system==1?`Module ${bi+1}`:`String ${"AB"[bi]}`):"String";
+    if(S.open===bi){ el("text",{x:x0+totalW+2,y:wy-4,"font-size":16,fill:"#d23a3a","font-weight":"bold"},svg).textContent="✂"; }
+    mods.forEach((m,mi)=>{
+      const x=x0+mi*(modW+mgap), y=y0;
+      el("rect",{x,y,width:modW,height:modH,rx:3,fill:"#c4ccd6",stroke:"#7d8794"},svg);
+      el("line",{x1:x+modW/2,y1:y+modH,x2:x+modW/2,y2:wy,stroke:"#555","stroke-width":2},svg);
+      const nb=m.n_bypass, cps=nb?C/nb:C;
+      for(let c=0;c<C;c++) for(let r=0;r<R;r++){
+        const sub=nb?Math.floor(c/cps):0;
+        const idx=nb?sub*(R*cps)+(c%cps)*R+r:c*R+r;
+        const cx=x+3+c*cs, cy=y+3+r*cs;
+        const rc=el("rect",{x:cx+.6,y:cy+.6,width:cs-1.2,height:cs-1.2,rx:1.5,fill:((c+r)%2?"var(--cell)":"var(--cell2)")},svg);
+        S.cells.push({flat,idx,sub,b:bi,m:mi,cx:cx+cs/2,cy:cy+cs/2,rect:rc});
+      }
+      // substrings (bypass) or module short target
+      const nsub=nb||1;
+      for(let s=0;s<nsub;s++){
+        const sx=x+3+s*cps*cs, sw=cps*cs;
+        const key=`${bi},${mi},${nb?s:"all"}`;
+        const hit=el("rect",{x:sx,y:y+3,width:sw,height:R*cs,fill:"transparent",stroke:S.shorts.has(key)?"#d23a3a":"none","stroke-width":3,"data-key":key,class:"subhit"},svg);
+        if(S.shorts.has(key)) el("text",{x:sx+sw/2-6,y:y+R*cs/2+8,"font-size":20,fill:"#ff5a5a","pointer-events":"none"},svg).textContent="⚡";
+        if(nb && s>0) el("line",{x1:sx,y1:y+3,x2:sx,y2:y+3+R*cs,stroke:"#9aa7b6","stroke-width":1,"pointer-events":"none"},svg);
+      }
+      if(nb){ // bypass diode symbols on top
+        for(let s=0;s<nb;s++){ const dx=x+3+(s+.5)*cps*cs; el("path",{d:`M${dx-5} ${y-2} l5 -6 l5 6 z`,fill:"#444"},svg); }
+      }
+      flat++;
+    });
+  });
+  S.nFlat=flat;
+  S.overlay=el("g",{},svg); S.shadowLayer=el("g",{},svg);
+  svg.onpointerdown=panelDown; svg.onpointermove=panelMove; svg.onpointerup=panelUp; svg.onpointerleave=panelUp;
+  svg.onwheel=panelWheel; svg.ondblclick=panelDbl;
+  renderOverlay();
+}
+function svgPt(ev){const svg=$("panelSvg");const p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
+function inShape(sh,x,y){
+  if(sh.type=="leaf"||sh.type=="tree"){const dx=(x-sh.x)/(sh.w/2),dy=(y-sh.y)/(sh.h/2);return dx*dx+dy*dy<=1}
+  return Math.abs(x-sh.x)<=sh.w/2&&Math.abs(y-sh.y)<=sh.h/2;
+}
+function addShadow(type){
+  if(S.hidden) clearHidden();
+  const cs=S.geom.cs, big=S.system>1;
+  // default sizes cover what the training shadows covered (System 1: up to 8 cells; Systems 2-4: 6-10 substrings)
+  const size={leaf:[2.6*cs,2.2*cs],pole:[big?19*cs:9*cs,1.6*cs],tree:[big?17*cs:4.2*cs,big?12*cs:3.6*cs],wall:[big?14*cs:3.2*cs,big?10*cs:2.6*cs]}[type];
+  S.shadows.push({type,x:S.geom.W/2-30,y:S.geom.H/2,w:size[0],h:size[1]}); renderOverlay(); markStale();
+}
+let drag=null;
+function panelDown(ev){
+  const p=svgPt(ev);
+  if(S.mode=="short"){const t=ev.target.closest(".subhit"); if(t){toggleShort(t.dataset.key);} return;}
+  if(S.mode=="mud"){S.mud.push({x:p.x,y:p.y,r:S.geom.cs*1.8}); renderOverlay(); markStale(); return;}
+  for(let i=S.shadows.length-1;i>=0;i--){ if(inShape(S.shadows[i],p.x,p.y)){drag={i,dx:p.x-S.shadows[i].x,dy:p.y-S.shadows[i].y};$("panelSvg").setPointerCapture(ev.pointerId);return} }
+}
+function panelMove(ev){ if(!drag)return; const p=svgPt(ev); const sh=S.shadows[drag.i]; sh.x=p.x-drag.dx; sh.y=p.y-drag.dy; renderOverlay(); markStale(); }
+function panelUp(){ drag=null }
+function panelWheel(ev){const p=svgPt(ev);for(let i=S.shadows.length-1;i>=0;i--){const sh=S.shadows[i];if(inShape(sh,p.x,p.y)){ev.preventDefault();const f=ev.deltaY<0?1.08:1/1.08;sh.w*=f;sh.h*=f;renderOverlay();markStale();return}}}
+function panelDbl(ev){const p=svgPt(ev);for(let i=S.shadows.length-1;i>=0;i--){if(inShape(S.shadows[i],p.x,p.y)){S.shadows.splice(i,1);renderOverlay();markStale();return}}}
+function toggleShort(key){ if(S.hidden) clearHidden(); S.shorts.has(key)?S.shorts.delete(key):S.shorts.add(key); buildPanel(); drawCircuit(); markStale(); }
+
+/* per-cell transmittance and shadow mask, in simulator cell order */
+function cellArrays(){
+  const mods=S.layout.branches.flat(); const trans=mods.map(m=>new Array(m.n_cells).fill(1)); const shadow=mods.map(m=>new Array(m.n_cells).fill(0));
+  const film=1-S.dustFilm/100;
+  for(const c of S.cells){
+    let t=film; if(S.dustMap) t*=S.dustMap[c.flat][c.idx];
+    for(const m of S.mud){ if((c.cx-m.x)**2+(c.cy-m.y)**2<=m.r*m.r) t*=MUD_T; }
+    if(S.shadows.some(sh=>inShape(sh,c.cx,c.cy))){ t*=SHADOW_T; shadow[c.flat][c.idx]=1; }
+    trans[c.flat][c.idx]=+t.toFixed(3);
+  }
+  return {trans,shadow};
+}
+function renderOverlay(){
+  const g=S.shadowLayer; g.innerHTML="";
+  const showHidden=S.hidden&&S.revealed;
+  // dust/mud tint on cells
+  const film=S.dustFilm/100;
+  for(const c of S.cells){
+    let dust=film, ht=1;
+    if(S.dustMap) dust=1-(1-dust)*S.dustMap[c.flat][c.idx];
+    for(const m of S.mud){ if((c.cx-m.x)**2+(c.cy-m.y)**2<=m.r*m.r) dust=1-(1-dust)*MUD_T; }
+    if(showHidden&&S.hidden.trans){ ht=S.hidden.trans[c.flat][c.idx]; }
+    let fill=null, op=0;
+    if(showHidden&&ht<1){ if(S.hidden.truth==1){fill="#111";op=(1-ht)*0.9} else {fill="#8a6a3c";op=Math.min(.9,(1-ht)*2.2)} }
+    else if(dust>0.001){ fill="#8a6a3c"; op=Math.min(.9,dust*2.2); }
+    c.rect.style.filter=""; c.rect.setAttribute("opacity",1);
+    if(fill){ const o=c.ov||(c.ov=el("rect",{},S.overlay)); o.setAttribute("x",c.rect.getAttribute("x"));o.setAttribute("y",c.rect.getAttribute("y"));
+      o.setAttribute("width",c.rect.getAttribute("width"));o.setAttribute("height",c.rect.getAttribute("height"));o.setAttribute("fill",fill);o.setAttribute("opacity",op);o.setAttribute("pointer-events","none");}
+    else if(c.ov){ c.ov.setAttribute("opacity",0); }
+  }
+  for(const sh of S.shadows){
+    const a={fill:"#000",opacity:.5,style:"cursor:grab"};
+    if(sh.type=="leaf"||sh.type=="tree") el("ellipse",{cx:sh.x,cy:sh.y,rx:sh.w/2,ry:sh.h/2,...a,filter:sh.type=="tree"?"":""},g);
+    else el("rect",{x:sh.x-sh.w/2,y:sh.y-sh.h/2,width:sh.w,height:sh.h,...a},g);
+  }
+  for(const m of S.mud) el("circle",{cx:m.x,cy:m.y,r:m.r,fill:"#5b3d1a",opacity:.55,"pointer-events":"none"},g);
+  $("cover").style.display=S.hidden&&!S.revealed?"flex":"none";
+}
+
+/* ---------------- controls ---------------- */
+function updateLabels(){
+  $("gVal").textContent=`${S.G} W/m²`; $("tVal").textContent=`${S.Ta} °C`;
+  $("dustVal").textContent=`${S.dustFilm} % loss`; $("rVal").textContent=S.rfrac?`${S.rfrac} % of Vmp/Imp`:"none";
+  $("shortBtn").classList.toggle("on",S.mode=="short"); $("mudBtn").classList.toggle("on",S.mode=="mud");
+  updateLock();
+}
+function drawCutRow(){
+  const br=S.layout.branches, row=$("cutRow"); row.innerHTML="";
+  br.forEach((b,i)=>{const n=br.length>1?(S.system==1?`Module ${i+1}`:`String ${"AB"[i]}`):"Main string";
+    const bt=document.createElement("button"); bt.textContent=(S.open===i?"✂ ":"")+n; bt.className=S.open===i?"on":"";
+    bt.onclick=()=>{ if(S.hidden) clearHidden(); S.open=S.open===i?null:i; drawCutRow(); buildPanel(); drawCircuit(); markStale(); }; row.appendChild(bt);});
+  const rr=$("rBranchRow"); rr.innerHTML="";
+  if(br.length>1) br.forEach((b,i)=>{const bt=document.createElement("button");bt.textContent=`at ${S.system==1?"module "+(i+1):"string "+"AB"[i]}`;
+    bt.className=S.rbranch==i?"on":""; bt.onclick=()=>{S.rbranch=i;drawCutRow();markStale()}; rr.appendChild(bt);});
+  updateLock();
+}
+$("gIn").oninput=e=>{S.G=+e.target.value;updateLabels();markStale()};
+$("tIn").oninput=e=>{S.Ta=+e.target.value;updateLabels();markStale()};
+$("dustIn").oninput=e=>{if(S.hidden)clearHidden();S.dustFilm=+e.target.value;updateLabels();renderOverlay();markStale()};
+$("rIn").oninput=e=>{if(S.hidden)clearHidden();S.rfrac=+e.target.value;updateLabels();drawCircuit();markStale()};
+document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>addShadow(b.dataset.add));
+$("shortBtn").onclick=()=>{S.mode=S.mode=="short"?null:"short";updateLabels()};
+$("mudBtn").onclick=()=>{S.mode=S.mode=="mud"?null:"mud";updateLabels()};
+$("cleanBtn").onclick=()=>{S.shadows=[];S.dustMap=null;S.mud=[];S.dustFilm=0;$("dustIn").value=0;if(S.hidden)clearHidden();updateLabels();renderOverlay();markStale()};
+$("repairBtn").onclick=async()=>{S.shorts.clear();S.open=null;S.rfrac=0;$("rIn").value=0;if(S.hidden)clearHidden();S.mode=null;updateLabels();drawCutRow();buildPanel();drawCircuit();markStale();
+  if(S.last&&S.last.hw&&S.last.hw.tripped){ await measure(true); toast("Repaired - RESET pressed, contactor K1 closed again"); }   // technician repairs, then resets the relay
+};
+$("realDust").onclick=async()=>{ // realistic dirt from the simulator's dirt model
+  if(S.hidden)clearHidden();
+  let h; for(let i=0;i<20;i++){ h=await api("/api/hidden",{system:S.system,config:S.config,G:S.G}); if(h.truth==2)break; }
+  if(h.truth!=2){toast("Try again");return}
+  S.dustMap=h.trans.map(m=>m.map(v=>Math.min(1,v)));
+  S.dustFilm=0;$("dustIn").value=0;updateLabels();renderOverlay();markStale();toast("Dirt pattern from the simulator's dirt model");
+};
+$("cfgS").onclick=async()=>{S.config="series";clearAll(false);await loadLayout()};
+$("cfgP").onclick=async()=>{S.config="parallel";clearAll(false);await loadLayout()};
+function clearAll(redraw=true){S.shadows=[];S.dustMap=null;S.mud=[];S.dustFilm=0;$("dustIn").value=0;S.shorts.clear();S.open=null;S.rfrac=0;$("rIn").value=0;S.rbranch=0;S.mode=null;S.hidden=null;S.revealed=false;$("revealBtn").disabled=true;
+  if(redraw){updateLabels();buildPanel();drawCutRow();drawCircuit()} }
+function clearHidden(){S.hidden=null;S.revealed=false;$("revealBtn").disabled=true;renderOverlay()}
+function markStale(){ if(S.last){ $("predBox").style.opacity=.45; } updateLock(); }
+/* one fault at a time: once a fault type is in use, the tools of the other fault types are greyed out */
+function updateLock(){
+  const act={shade:S.shadows.length>0, dirt:S.dustFilm>0||!!S.dustMap||(S.mud&&S.mud.length>0)||S.mode=="mud",
+             open:S.open!==null, short:S.shorts.size>0||S.mode=="short", corr:S.rfrac>0};
+  const on=Object.keys(act).find(k=>act[k])||null;
+  const groups={shade:[...document.querySelectorAll(".tool[data-add]")], dirt:[$("dustIn"),$("realDust"),$("mudBtn")],
+                open:[...$("cutRow").querySelectorAll("button")], short:[$("shortBtn")],
+                corr:[$("rIn"),...$("rBranchRow").querySelectorAll("button")]};
+  for(const [k,els] of Object.entries(groups)){
+    const lock=on!==null&&k!==on;
+    for(const e of els){ if(!e)continue; e.classList.toggle("locked",lock); e.disabled=lock; }
+  }
+}
+
+/* ---------------- hidden fault ---------------- */
+$("hiddenBtn").onclick=async()=>{
+  clearAll(); S.hidden=await api("/api/hidden",{system:S.system,config:S.config,G:S.G}); S.revealed=false; $("revealBtn").disabled=false;
+  renderOverlay(); drawCircuit(); toast("A random fault is applied. Press Measure & diagnose.");
+};
+$("revealBtn").onclick=()=>{ if(!S.hidden)return; S.revealed=true; renderOverlay(); drawCircuit();
+  const h=S.hidden; let det="";
+  if(h.truth==3) det=` (${S.layout.branches.length>1?"branch "+(h.open_branch+1):"main string"} cut)`;
+  if(h.truth==4) det=` (${h.short.length} ${h.short[0][2]=="all"?"module":"substring(s)"} shorted)`;
+  if(h.truth==5) det=` (${Math.round(h.r_frac*100)} % extra resistance)`;
+  toast(`It was: ${h.label}${det}`);
+};
+
+/* ---------------- measure ---------------- */
+$("measureBtn").onclick=()=>measure(false);
+async function measure(reset=false){
+  if(S.busy)return; S.busy=true; $("measureBtn").disabled=true; $("measureBtn").textContent="Measuring…";
+  let body={system:S.system,config:S.config,G:S.G,Ta:S.Ta,reset};
+  if(S.hidden){ Object.assign(body,{trans:S.hidden.trans,open_branch:S.hidden.open_branch,short:S.hidden.short,r_frac:S.hidden.r_frac,r_branch:S.hidden.r_branch}); }
+  else{
+    const {trans,shadow}=cellArrays();
+    Object.assign(body,{trans,shadow,dust:S.dustFilm,open_branch:S.open,short:[...S.shorts].map(k=>{const [b,m,s]=k.split(",");return [+b,+m,s=="all"?"all":+s]}),
+      r_frac:S.rfrac/100,r_branch:S.rbranch});
+  }
+  try{
+    const r=await api("/api/measure",body); S.last=r; drawCircuit(r.hw);
+    await animateIV(r);
+    showResult(r);
+  }catch(e){toast("Error: "+e.message.slice(0,120));}
+  S.busy=false; $("measureBtn").disabled=false; $("measureBtn").textContent="Measure & diagnose"; $("predBox").style.opacity=1;
+}
+function showResult(r){
+  const c=r.pred.cls;
+  let h=`<div class="pred c${c}">${r.pred.label[0].toUpperCase()+r.pred.label.slice(1)}</div><div class="note">${r.note}</div><div class="bars" style="margin-top:8px">`;
+  r.pred.probs.forEach((p,i)=>h+=`<div class="b"><span>${CLASSES[i]}</span><div class="t"><div class="f" style="width:${(p*100).toFixed(1)}%;background:${i==c?'var(--accent)':'#9db6dc'}"></div></div><span>${(p*100).toFixed(1)}%</span></div>`);
+  h+="</div>"; for(const w of r.warnings) h+=`<div class="warn">⚠ ${w}</div>`;
+  h+=`<div class="note" style="margin-top:8px">Model: ${r.model}</div>`;
+  $("predBox").innerHTML=h;
+  // readings
+  const R=r.raw; $("readBox").innerHTML=[["Voc",R.Voc.toFixed(2)+" V"],["Isc",R.Isc.toFixed(3)+" A"],["Vmp",R.Vmp.toFixed(2)+" V"],["Imp",R.Imp.toFixed(3)+" A"],
+    ["Fill factor",r.features.FF.toFixed(3)],["Irradiance",R.G.toFixed(0)+" W/m²"],["Ambient",R.Ta.toFixed(1)+" °C"],["Power",(R.Vmp*R.Imp).toFixed(1)+" W"]].map(([a,b])=>`<span>${a}</span><span>${b}</span>`).join("");
+  // SHAP
+  const mx=Math.max(...r.shap.map(s=>Math.abs(s.contrib)),1e-6);
+  let sh=`<div class="note" style="margin:0 0 6px">Evidence for <b>${r.pred.label}</b> (blue = supports, red = against). Value vs a healthy array in the same weather:</div>`;
+  for(const s of r.shap){ const w=Math.abs(s.contrib)/mx*50; const pos=s.contrib>=0;
+    const why=(s.contrib>0&&/is normal/.test(s.plain))?" <i>(rules out faults that would change it)</i>":"";
+    sh+=`<div class="s"><span><b>${s.words}</b><br><span style="color:var(--muted)">${s.plain}${why}</span></span>
+      <div class="axis"><div class="bar" style="${pos?`left:50%`:`right:50%`};width:${w}%;background:${pos?'#2f6fd6':'#d23a3a'}"></div></div></div>`; }
+  const isNormal=s=>/is normal|Weather input|parallel string/.test(s.plain);
+  const main=r.shap.find(s=>s.contrib>0&&!isNormal(s))||r.shap[0];
+  sh+=`<div class="note" style="margin-top:6px"><b>Main reason:</b> ${main.plain}</div>`;
+  $("shapBox").innerHTML=sh;
+
+}
+const fmt=v=>Math.abs(v)>=10?v.toFixed(1):v.toFixed(3);
+
+/* ---------------- I-V plot ---------------- */
+function animateIV(r){
+  return new Promise(res=>{
+    const svg=$("ivSvg"); svg.innerHTML=""; const W=340,H=220,L=44,B=30,T=10,Rr=12;
+    const V=r.curve.V,I=r.curve.I,Vr=r.ref_curve.V,Ir=r.ref_curve.I;
+    const vmax=Math.max(...Vr,...V,1e-3)*1.05, imax=Math.max(...Ir,...I,1e-3)*1.1;
+    const X=v=>L+(W-L-Rr)*v/vmax, Y=i=>H-B-(H-B-T)*i/imax;
+    for(let k=0;k<=4;k++){const yy=Y(imax*k/4);el("line",{x1:L,y1:yy,x2:W-Rr,y2:yy,stroke:"#eef1f5"},svg);el("text",{x:L-4,y:yy+3,"font-size":9,"text-anchor":"end",fill:"#7a8796"},svg).textContent=(imax*k/4).toFixed(imax<2?2:1)}
+    for(let k=0;k<=4;k++){const xx=X(vmax*k/4);el("text",{x:xx,y:H-B+13,"font-size":9,"text-anchor":"middle",fill:"#7a8796"},svg).textContent=(vmax*k/4).toFixed(vmax<50?1:0)}
+    el("line",{x1:L,y1:H-B,x2:W-Rr,y2:H-B,stroke:"#9aa7b6"},svg);el("line",{x1:L,y1:T,x2:L,y2:H-B,stroke:"#9aa7b6"},svg);
+    el("text",{x:(W+L)/2,y:H-4,"font-size":10,"text-anchor":"middle",fill:"#5d6b7c"},svg).textContent="Voltage (V)";
+    const yl=el("text",{x:12,y:(H-B)/2,"font-size":10,"text-anchor":"middle",fill:"#5d6b7c",transform:`rotate(-90 12 ${(H-B)/2})`},svg);yl.textContent="Current (A)";
+    const path=(Vs,Is)=>Vs.map((v,k)=>`${k?"L":"M"}${X(v).toFixed(1)} ${Y(Is[k]).toFixed(1)}`).join(" ");
+    el("path",{d:path(Vr,Ir),fill:"none",stroke:"#8fa3bd","stroke-width":1.5,"stroke-dasharray":"5 4"},svg);
+    const p=el("path",{d:path(V,I),fill:"none",stroke:"#1f5fbf","stroke-width":2.4},svg);
+    const len=p.getTotalLength()||1; p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+    p.getBoundingClientRect(); p.style.transition="stroke-dashoffset 1s ease-out"; p.style.strokeDashoffset=0;
+    if(r.raw.Vmp>0) el("circle",{cx:X(r.raw.Vmp),cy:Y(r.raw.Imp),r:4,fill:"#e06c00"},svg);
+    setTimeout(res,1050);
+  });
+}
+
+/* ---------------- circuit: components + Raspberry Pi 4, driven by the Pi program's real pin states ---------------- */
+const BCM2PHYS={2:3,3:5,4:7,14:8,15:10,17:11,27:13,5:29,6:31,13:33,19:35,26:37};
+const PINNAME={1:"3V3",2:"5V",3:"SDA",4:"5V",5:"SCL",6:"GND",7:"GPIO4",8:"TXD",9:"GND",10:"RXD",11:"GPIO17",13:"GPIO27",14:"GND",29:"GPIO5",31:"GPIO6",33:"GPIO13",35:"GPIO19",37:"GPIO26",39:"GND"};
+let HW=null;
+function pinXY(n){const col=Math.floor((n-1)/2), row=(n-1)%2; return [402+col*13.4, 352-row*12];}
+function drawCircuit(hw){
+  if(hw) HW=hw; hw=HW||{pins:{},oled:null,log:[],tripped:false};
+  const P=hw.pins||{}, on=b=>P[String(b)]==1;
+  const svg=$("circuitSvg"); svg.innerHTML="";
+  const defs=el("defs",{},svg); const pat=el("pattern",{id:"grid",width:20,height:20,patternUnits:"userSpaceOnUse"},defs);
+  el("path",{d:"M20 0H0V20",fill:"none",stroke:"var(--grid)","stroke-width":1},pat);
+  el("rect",{width:1000,height:600,fill:"url(#grid)"},svg);
+  const comp={stroke:"var(--comp)","stroke-width":2,fill:"#fff7f2"};
+  const T=(x,y,t,o={})=>{const e=el("text",{x,y,"font-size":11,"font-family":"ui-monospace,Consolas,monospace",fill:"#3a2a2a",...o},svg);e.textContent=t;return e};
+  const contactorClosed=on(17), live=contactorClosed&&S.last&&S.last.raw.Isc>0.001&&S.last.raw.Voc>0.01;
+  // ---------- power circuit
+  T(20,22,"POWER CIRCUIT",{"font-weight":"bold",fill:"#8b1a1a"});
+  el("rect",{x:20,y:40,width:150,height:120,...comp},svg);
+  const br=S.layout.branches; for(let k=0;k<Math.min(br.length,3);k++){ const yy=52+k*(96/Math.min(br.length,3)); const h=Math.min(30,96/Math.min(br.length,3)-6);
+    el("rect",{x:32,y:yy,width:126,height:h,fill:"#1d3f78",stroke:"#0d2246"},svg); for(let j=1;j<8;j++) el("line",{x1:32+j*126/8,y1:yy,x2:32+j*126/8,y2:yy+h,stroke:"#3e6bb0"},svg); }
+  T(22,176,`PV ARRAY ${SYS_SHORT[S.system][1]}`); T(176,76,"+",{"font-weight":"bold"}); T(176,150,"−",{"font-weight":"bold"});
+  const pw=c=>({stroke:"#1f3a93","stroke-width":3,fill:"none",class:live?"flow":""});
+  el("path",{d:"M170 80 H560",...pw()},svg); el("path",{d:"M640 80 H820",...pw()},svg); el("path",{d:"M170 145 H820",...pw()},svg);
+  if(S.open!==null) T(186,72,"✂ open",{fill:"#d23a3a","font-weight":"bold"});
+  if(S.rfrac>0) T(186,98,`R+ ${S.rfrac} %`,{fill:"#e06c00","font-weight":"bold"});
+  if(S.shorts.size) T(26,196,"⚡ shorted bypass diode(s)",{fill:"#d23a3a","font-weight":"bold"});
+  // tracer board
+  el("circle",{cx:280,cy:80,r:4,fill:"#1f3a93"},svg); el("circle",{cx:320,cy:145,r:4,fill:"#1f3a93"},svg);
+  el("path",{d:"M280 80 V200 M320 145 V200",stroke:"#1f3a93","stroke-width":2.5,fill:"none"},svg);
+  el("rect",{x:240,y:200,width:200,height:92,rx:6,fill:"#eef6ee",stroke:"#2b6a3e","stroke-width":2},svg);
+  T(250,218,"I-V TRACER BOARD",{"font-weight":"bold",fill:"#1d4d2c"});
+  T(250,236,"IGBT switch + 2.2 mF capacitor",{"font-size":10}); T(250,250,"5 mΩ shunt, 1 MΩ/5.1 kΩ divider",{"font-size":10});
+  T(250,264,"12-bit ADC + MCU, UART 115200",{"font-size":10}); T(250,280,on(27)?"● SWEEPING":"○ idle",{"font-size":10,fill:on(27)?"#d23a3a":"#5d6b7c","font-weight":"bold"});
+  // contactor
+  T(540,40,"K1 DC CONTACTOR",{"font-weight":"bold",fill:"#8b1a1a"});
+  el("circle",{cx:560,cy:80,r:4,fill:"var(--comp)"},svg); el("circle",{cx:640,cy:80,r:4,fill:"var(--comp)"},svg);
+  el("line",{x1:560,y1:80,x2:contactorClosed?640:632,y2:contactorClosed?80:50,stroke:"var(--comp)","stroke-width":4},svg);
+  T(574,66,contactorClosed?"CLOSED":"OPEN",{"font-weight":"bold",fill:contactorClosed?"#1f9d55":"#d23a3a"});
+  el("rect",{x:572,y:100,width:56,height:24,...comp},svg); T(582,116,"coil");
+  el("path",{d:"M600 86 V100",stroke:"var(--comp)","stroke-dasharray":"3 3"},svg);
+  el("rect",{x:572,y:160,width:56,height:28,...comp},svg); T(578,178,"Q2 MOSFET",{"font-size":9});
+  el("path",{d:"M600 124 V160",stroke:"var(--comp)","stroke-width":1.5,fill:"none"},svg);
+  // inverter
+  el("rect",{x:820,y:40,width:150,height:120,...comp},svg); T(850,96,"INVERTER",{"font-weight":"bold"}); T(842,112,"(grid / load)");
+  // ---------- control circuit
+  T(20,322,"CONTROL: RASPBERRY PI 4",{"font-weight":"bold",fill:"#2b6a3e"});
+  // Pi board
+  el("rect",{x:380,y:330,width:300,height:200,rx:10,fill:"#1e7a46",stroke:"#0f4d2b","stroke-width":2},svg);
+  T(392,420,"RASPBERRY PI 4",{fill:"#fff","font-size":14,"font-weight":"bold"}); T(392,440,"pi_monitor.py",{fill:"#c9f0d8","font-size":11});
+  T(392,456,"XGBoost + SHAP",{fill:"#c9f0d8","font-size":11}); T(392,472,"22 inputs",{fill:"#c9f0d8","font-size":11});
+  el("rect",{x:394,y:332,width:274,height:30,fill:"#123",rx:2},svg);
+  for(let n=1;n<=40;n++){ const [x,y]=pinXY(n); const nm=PINNAME[n]||""; let f="#c9a227";
+    if(nm=="GND") f="#222"; else if(nm=="3V3"||nm=="5V") f="#c0392b";
+    const bcm=Object.keys(BCM2PHYS).find(b=>BCM2PHYS[b]==n);
+    if(bcm!==undefined&&[17,27,5,6,13,19,26].includes(+bcm)) f=on(bcm)?"#3dff7a":"#4b5563";
+    el("rect",{x:x-4,y:y-4,width:8,height:8,fill:f,stroke:"#000","stroke-width":.5},svg); }
+  const wire=(n,pts,color,label,lx,ly)=>{const [x,y]=pinXY(n); el("path",{d:`M${x} ${y} `+pts,stroke:color,"stroke-width":2,fill:"none"},svg); if(label)T(lx,ly,label,{"font-size":9,fill:color});};
+  const g=b=>on(b)?"#16a34a":"#6b7280";
+  // I2C bus (SDA pin3, SCL pin5) -> ADS1115 and OLED
+  wire(3,"V318 H230 V360","#2563eb"); wire(5,"V312 H236 V360","#7c3aed");
+  wire(3,"V312 H760 V330","#2563eb"); wire(5,"V318 H754 V330","#7c3aed"); T(240,352,"I2C bus (pins 3, 5)",{"font-size":9,fill:"#2563eb"});
+  el("rect",{x:150,y:360,width:130,height:62,...comp},svg); T(158,378,"ADS1115 16-bit",{"font-weight":"bold"}); T(158,394,"ADC  I2C 0x48",{"font-size":10}); T(158,410,"A0 ← pyranometer",{"font-size":10});
+  el("rect",{x:20,y:372,width:100,height:40,...comp},svg); T(28,390,"PYRANOMETER",{"font-size":10}); T(28,404,"+ amp 2 mV/W·m²",{"font-size":9});
+  el("path",{d:"M120 392 H150",stroke:"#b45309","stroke-width":2},svg);
+  // DS18B20 on GPIO4 (pin 7)
+  el("rect",{x:150,y:446,width:130,height:44,...comp},svg); T(158,464,"DS18B20 air temp",{"font-weight":"bold","font-size":10}); T(158,480,"1-Wire, 4.7 kΩ pull-up",{"font-size":9});
+  wire(7,"V324 H300 V468 H280","#0891b2"); T(286,460,"GPIO4",{"font-size":9,fill:"#0891b2"});
+  // tracer UART (pins 8,10) + START (pin 13)
+  wire(8,"V300 H420 V292","#9333ea"); wire(10,"V306 H410 V292","#9333ea"); T(448,252,"UART TX/RX (pins 8, 10)",{"font-size":9,fill:"#9333ea"});
+  wire(13,"V296 H400 V292",g(27)); T(448,266,"GPIO27 = sweep START",{"font-size":9,fill:g(27)});
+  // contactor driver (pin 11)
+  wire(11,"V296 H600 V188",g(17)); T(606,240,`GPIO17 = ${on(17)?"HIGH":"LOW"}`,{"font-size":10,fill:g(17),"font-weight":"bold"});
+  // OLED with the real frame buffer
+  el("rect",{x:700,y:330,width:280,height:160,rx:6,fill:"#0b0f14",stroke:"#333"},svg); T(704,504,"SSD1306 OLED 128×64, I2C 0x3C",{"font-size":9});
+  const fo=el("foreignObject",{x:712,y:345,width:256,height:128},svg);
+  const cv=document.createElement("canvas"); cv.width=256; cv.height=128; cv.style.width="256px"; cv.style.height="128px"; fo.appendChild(cv);
+  const cx=cv.getContext("2d"); cx.fillStyle="#04070b"; cx.fillRect(0,0,256,128); cx.fillStyle="#7fd7ff";
+  if(hw.oled) hw.oled.forEach((row,y)=>{for(let x=0;x<128;x++) if(row.charCodeAt(x)==49) cx.fillRect(x*2,y*2,2,2);});
+  // LEDs (pins 29/31/33), buzzer (35), reset button (37)
+  const ledCol={5:"#36d17a",6:"#ffd34d",13:"#ff4d4d"}; const ledX={5:720,6:760,13:800};
+  for(const b of [5,6,13]){ const n=BCM2PHYS[b]; wire(n,`V540 H${ledX[b]} V548`,g(b));
+    el("circle",{cx:ledX[b],cy:560,r:11,fill:on(b)?ledCol[b]:"#d1d5db",stroke:"#555"},svg); T(ledX[b]-14,586,`GPIO${b}`,{"font-size":9}); }
+  wire(35,"V534 H880 V548",g(19)); const bz=el("g",{class:on(19)?"buzz":""},svg); el("rect",{x:862,y:548,width:40,height:22,rx:4,...comp},bz);
+  const bt=el("text",{x:866,y:563,"font-size":10,"font-family":"monospace"},bz); bt.textContent="BUZZ"; T(906,563,"GPIO19",{"font-size":9});
+  wire(37,"V528 H560 V552",g(26)); el("circle",{cx:560,cy:562,r:10,fill:"#9ca3af",stroke:"#374151"},svg); T(520,590,"RESET (GPIO26)",{"font-size":9});
+  // live pin table
+  const rows=[["GPIO17","contactor",17],["GPIO27","tracer start",27],["GPIO5","green LED",5],["GPIO6","yellow LED",6],["GPIO13","red LED",13],["GPIO19","buzzer",19]];
+  T(20,520,"PIN STATES SET BY pi_monitor.py",{"font-size":10,"font-weight":"bold"});
+  rows.forEach(([a,b,c],i)=>T(20+(i%2)*170,538+Math.floor(i/2)*16,`${a.padEnd(7)} ${b.padEnd(12)} ${on(c)?"HIGH":"LOW"}`,{"font-size":10,fill:on(c)?"#16a34a":"#6b7280"}));
+  // activity log
+  const lg=$("piLog"); if(lg) lg.textContent=(hw.log&&hw.log.length)?hw.log.join("\n"):"(no cycle run yet)";
+  const rs=$("tripInfo"); if(rs) rs.innerHTML=hw.tripped?`<span style="color:var(--bad);font-weight:700">Contactor latched OPEN after a short-circuit trip.</span> Repair the fault, then press RESET.`:"Contactor closed.";
+}
+
+/* ---------------- commissioning ---------------- */
+async function refreshStatus(){
+  S.status=await api("/api/status"); CLASSES=S.status.classes; $("elecCard").style.display=CLASSES.length>3?"block":"none"; drawTabs();
+  const s=S.system; $("modelDesc").textContent=S.status.desc[s];
+  const b=$("commBody");
+  b.innerHTML=`<div class="note">The library model was trained on 90 generic simulated systems; <b>none of Systems 1–3 was in its training data</b>. Commissioning: take 5 labelled readings per class on this system and retrain, like a technician installing the monitor; the Raspberry Pi then loads the new model file.</div>
+   <div class="note" style="margin-top:6px">Readings taken: <b>5 per class</b></div>
+   <div class="row" style="margin-top:8px"><button id="commBtn" style="flex:1;font-weight:650">Commission this system</button></div>
+   <div class="row" style="margin-top:6px"><button id="fbBtn" style="flex:1">Use pre-adapted model</button><button id="resetBtn" class="danger">Reset all</button></div>
+   <div id="commOut" class="steps"></div>`;
+  S.k=5;
+  $("commBtn").onclick=commission; $("fbBtn").onclick=async()=>{const r=await api("/api/fallback",{system:s});toast(r.desc);refreshStatus()};
+  $("resetBtn").onclick=async()=>{await api("/api/reset",{});toast("All systems reset to the library model");refreshStatus();drawCircuit(await api(`/api/hw?system=${S.system}`))};
+}
+async function commission(){
+  const out=$("commOut"); const k=S.k; $("commBtn").disabled=true;
+  out.innerHTML=`<div class="done">1. Taking ${k*CLASSES.length} labelled readings (${k} per class) + ${8*CLASSES.length} fresh check readings…</div><div>2. Retraining XGBoost…</div><div>3. Checking on the fresh readings…</div>`;
+  try{
+    const r=await api("/api/commission",{system:S.system,k});
+    out.innerHTML=`<div class="done">1. Took ${r.n_readings} labelled readings in ${r.read_s} s</div><div class="done">2. Retrained XGBoost in ${r.train_s} s</div>
+     <div class="done">3. Accuracy on ${r.n_check} fresh readings of this system:</div>
+     <div class="row" style="align-items:baseline;gap:14px;margin-top:4px"><span>before <span class="big" style="color:var(--bad)">${(r.before*100).toFixed(0)} %</span></span>
+     <span>→ after <span class="big" style="color:var(--ok)">${(r.after*100).toFixed(0)} %</span></span></div>`;
+  }catch(e){out.innerHTML=`<div class="warn">${e.message.slice(0,200)}</div>`}
+  $("commBtn").disabled=false; const keep=out.innerHTML; await refreshStatus(); $("commOut").innerHTML=keep;
+}
+
+$("resetPiBtn").onclick=async()=>{await measure(true);toast("RESET held during this cycle: the program re-closes the contactor unless the short is still there")};
+
+
+/* ---------------- MATLAB buttons ---------------- */
+function showCopy(txt,msg){
+  let d=$("copyBox");
+  if(!d){d=document.createElement("div");d.id="copyBox";d.style.cssText="position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:50";
+    d.innerHTML='<div style="background:#fff;border-radius:12px;padding:16px;width:min(760px,92vw)"><div id="copyMsg" style="font-weight:600;margin-bottom:8px"></div><textarea id="copyTxt" style="width:100%;height:220px;font:12px ui-monospace,Consolas,monospace"></textarea><div class="row" style="margin-top:8px;justify-content:flex-end"><button id="copyAgain">Copy</button><button id="copyClose">Close</button></div></div>';
+    document.body.appendChild(d); $("copyClose").onclick=()=>d.style.display="none";
+    $("copyAgain").onclick=async()=>{const t=$("copyTxt");t.select();try{await navigator.clipboard.writeText(t.value);toast("Copied")}catch(e){document.execCommand("copy");toast("Copied")}};}
+  $("copyMsg").textContent=msg; $("copyTxt").value=txt; d.style.display="flex";
+}
+async function copyText(txt,msg){ try{await navigator.clipboard.writeText(txt);toast("Copied. "+msg)}catch(e){} showCopy(txt,msg); }
+const num=(v,d=6)=>Number(v).toFixed(d).replace(/\.?0+$/,"")||"0";
+const mrow=a=>"["+a.map(v=>num(v,3)).join(" ")+"]";
+const mmat=rows=>"["+rows.map(r=>r.map(v=>num(v,3)).join(" ")).join("; ")+"]";
+$("matCmdBtn").onclick=()=>{
+  if(!S.last){toast("Measure first");return}
+  const c=S.last.scenario; let a=[`${c.system}`,`'G',${num(c.G,1)}`,`'Ta',${num(c.Ta,2)}`,`'Tc',${num(c.Tc,2)}`,`'config','${c.config}'`];
+  if(c.light.some(r=>r.some(v=>v<0.9995))) a.push(`'light',${mmat(c.light)}`);
+  if(c.short.length) a.push(`'short',${mmat(c.short)}`);
+  if(c.open) a.push(`'open',${c.open}`);
+  if(c.corrosion>0) a.push(`'corrosion',${num(c.corrosion,3)}`,`'rbranch',${c.rbranch}`);
+  copyText(`pv_check(${a.join(", ")})`,"Paste into the MATLAB Command Window (after setup_pv).");
+};
+$("matWebBtn").onclick=()=>{
+  if(!S.last){toast("Measure first");return}
+  const r=S.last, R=r.raw, f=r.feature_order;
+  const txt=`web = struct('system',${S.system}, 'config','${S.config}', 'pred','${r.pred.label}', 'probs',${mrow(r.pred.probs)}, `+
+    `'Voc',${num(R.Voc,4)}, 'Isc',${num(R.Isc,5)}, 'Vmp',${num(R.Vmp,4)}, 'Imp',${num(R.Imp,5)}, 'P',${num(R.Vmp*R.Imp,3)}, 'G',${num(R.G,2)}, 'Ta',${num(R.Ta,2)}, `+
+    `'inputs',[${f.map(k=>num(r.inputs[k],6)).join(" ")}], 'V',${mrow(r.curve.V)}, 'I',${mrow(r.curve.I)});`;
+  copyText(txt,"Paste into the MATLAB Command Window, then run compare_with_website.");
+};
+$("matInBtn").onclick=()=>{
+  if(!S.last){toast("Measure first");return}
+  const r=S.last; copyText(`predict_inputs([${r.feature_order.map(k=>num(r.inputs[k],6)).join(" ")}])`,"Paste into the MATLAB Command Window (after setup_pv).");
+};
+/* ---------------- export ---------------- */
+$("exportBtn").onclick=async()=>{
+  if(!S.last){toast("Measure first");return}
+  const m=await api("/api/export_model",{system:S.system});
+  const f=S.last.inputs; const vals="{"+Object.keys(f).map(k=>`'${k}': ${f[k].toFixed(6)}`).join(", ")+"}";
+  const txt=`check_reading(${vals}, '${m.file}')`;
+  try{await navigator.clipboard.writeText(txt);toast("Copied — paste into the notebook's 'Check any reading' cell")}catch(e){prompt("Copy this:",txt)}
+};
+
+/* ---------------- start ---------------- */
+(async()=>{
+  try{ await loadLayout(); await refreshStatus(); updateLabels(); }
+  catch(e){
+    document.querySelector("main").innerHTML=`<div class="card" style="grid-column:1/-1;max-width:720px;margin:40px auto;font-size:15px">
+      <h2>Demo server not running</h2>
+      <p>This page needs the Python backend (the simulator and the XGBoost model). Opening <code>index.html</code> directly does not work.</p>
+      <ol><li>Open a terminal in the project folder</li><li>Run <code>pip install -r requirements.txt</code> (once)</li>
+      <li>Run <code>python run_demo.py</code> — the demo opens at <b>http://127.0.0.1:8000</b></li></ol></div>`;
+  }
+})();
+</script>
+</body>
+</html>

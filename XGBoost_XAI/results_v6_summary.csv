@@ -1,0 +1,4 @@
+,System 1,System 2,System 3
+zero-shot,0.967,0.98,0.983
+after 5 readings per class,0.974,0.992,0.991
+within-system (upper bound),0.987,0.992,0.984

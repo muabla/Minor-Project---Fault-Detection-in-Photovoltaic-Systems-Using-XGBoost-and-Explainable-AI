@@ -1,0 +1,91 @@
+id,name,cells,bypass,parallel,length,isc,mixed,kind
+1000,Library 1000: 2 x 7 x 36c-3.4A (0 bypass),36,0,2,7,3.395522747128713,False,small
+1001,"Library 1001: 3 x 18 x 72c-9.3A (3 bypass, mixed modules)",72,3,3,18,9.308479191359195,True,std
+1002,"Library 1002: 1 x 19 x 60c-9.5A (3 bypass, mixed modules)",60,3,1,19,9.532847076785934,True,std
+1003,"Library 1003: 1 x 3 x 36c-8.4A (2 bypass, mixed modules)",36,2,1,3,8.380656255228192,True,36c
+1004,"Library 1004: 3 x 14 x 60c-5.9A (3 bypass, mixed modules)",60,3,3,14,5.933539380236808,True,std
+1005,Library 1005: 1 x 20 x 72c-10.9A (3 bypass),72,3,1,20,10.897158320669153,False,std
+1006,Library 1006: 1 x 17 x 72c-9.9A (3 bypass),72,3,1,17,9.942701664031151,False,std
+1007,Library 1007: 2 x 8 x 60c-9.0A (3 bypass),60,3,2,8,9.046688670912218,False,std
+1008,Library 1008: 2 x 10 x 36c-8.4A (2 bypass),36,2,2,10,8.386598725724788,False,36c
+1009,Library 1009: 2 x 6 x 72c-6.9A (3 bypass),72,3,2,6,6.942099035167988,False,std
+1010,"Library 1010: 3 x 12 x 72c-7.9A (3 bypass, mixed modules)",72,3,3,12,7.911177076461531,True,std
+1011,Library 1011: 3 x 4 x 36c-3.5A (0 bypass),36,0,3,4,3.4744953685616826,False,small
+1012,Library 1012: 2 x 1 x 36c-2.9A (0 bypass),36,0,2,1,2.894944125109933,False,small
+1013,"Library 1013: 1 x 10 x 72c-9.8A (3 bypass, mixed modules)",72,3,1,10,9.793573891376646,True,std
+1014,"Library 1014: 1 x 4 x 72c-11.0A (3 bypass, mixed modules)",72,3,1,4,10.950138629245117,True,std
+1015,Library 1015: 3 x 10 x 72c-5.8A (3 bypass),72,3,3,10,5.826670880423512,False,std
+1016,Library 1016: 2 x 12 x 72c-7.6A (3 bypass),72,3,2,12,7.582547889520482,False,std
+1017,"Library 1017: 1 x 10 x 36c-6.6A (2 bypass, mixed modules)",36,2,1,10,6.621898990762055,True,36c
+1018,Library 1018: 3 x 16 x 72c-11.2A (3 bypass),72,3,3,16,11.223448910651577,False,std
+1019,"Library 1019: 1 x 4 x 60c-6.6A (3 bypass, mixed modules)",60,3,1,4,6.616215455318985,True,std
+1020,"Library 1020: 3 x 4 x 36c-2.7A (0 bypass, mixed modules)",36,0,3,4,2.712240121902268,True,small
+1021,Library 1021: 2 x 8 x 72c-7.7A (3 bypass),72,3,2,8,7.737908263796145,False,std
+1022,Library 1022: 1 x 6 x 60c-11.1A (3 bypass),60,3,1,6,11.08460544252302,False,std
+1023,Library 1023: 1 x 20 x 72c-7.1A (3 bypass),72,3,1,20,7.102436238463282,False,std
+1024,Library 1024: 3 x 11 x 36c-4.4A (2 bypass),36,2,3,11,4.396093635030129,False,36c
+1025,"Library 1025: 3 x 16 x 72c-9.7A (3 bypass, mixed modules)",72,3,3,16,9.695835163389187,True,std
+1026,"Library 1026: 2 x 12 x 60c-10.2A (3 bypass, mixed modules)",60,3,2,12,10.239863587707207,True,std
+1027,Library 1027: 2 x 15 x 72c-10.2A (3 bypass),72,3,2,15,10.182182198703323,False,std
+1028,"Library 1028: 3 x 19 x 72c-9.4A (3 bypass, mixed modules)",72,3,3,19,9.355690411615644,True,std
+1029,Library 1029: 1 x 9 x 36c-7.8A (2 bypass),36,2,1,9,7.842162181591982,False,36c
+1030,Library 1030: 3 x 8 x 36c-5.8A (0 bypass),36,0,3,8,5.808604826651135,False,small
+1031,Library 1031: 2 x 6 x 60c-10.5A (3 bypass),60,3,2,6,10.521010051727703,False,std
+1032,Library 1032: 1 x 17 x 72c-11.1A (3 bypass),72,3,1,17,11.117233333514815,False,std
+1033,Library 1033: 1 x 4 x 72c-8.6A (3 bypass),72,3,1,4,8.64994689103591,False,std
+1034,Library 1034: 1 x 20 x 72c-5.7A (3 bypass),72,3,1,20,5.747419440033903,False,std
+1035,"Library 1035: 1 x 10 x 72c-6.1A (3 bypass, mixed modules)",72,3,1,10,6.093156616214093,True,std
+1036,"Library 1036: 2 x 15 x 72c-5.9A (3 bypass, mixed modules)",72,3,2,15,5.864068438854787,True,std
+1037,Library 1037: 3 x 12 x 60c-11.3A (3 bypass),60,3,3,12,11.317908770083731,False,std
+1038,Library 1038: 1 x 14 x 60c-9.6A (3 bypass),60,3,1,14,9.5974014351878,False,std
+1039,Library 1039: 3 x 8 x 36c-7.7A (2 bypass),36,2,3,8,7.6612095617799625,False,36c
+1040,Library 1040: 3 x 10 x 72c-10.3A (3 bypass),72,3,3,10,10.252168562846565,False,std
+1041,Library 1041: 1 x 7 x 60c-7.8A (3 bypass),60,3,1,7,7.8385308581059885,False,std
+1042,Library 1042: 3 x 4 x 60c-7.0A (3 bypass),60,3,3,4,6.959194248482195,False,std
+1043,Library 1043: 1 x 14 x 60c-10.3A (3 bypass),60,3,1,14,10.343059949946625,False,std
+1044,"Library 1044: 2 x 8 x 60c-9.8A (3 bypass, mixed modules)",60,3,2,8,9.82174124419476,True,std
+1045,"Library 1045: 1 x 8 x 36c-6.5A (2 bypass, mixed modules)",36,2,1,8,6.5286854604604905,True,36c
+1046,"Library 1046: 2 x 15 x 72c-6.7A (3 bypass, mixed modules)",72,3,2,15,6.745809130681964,True,std
+1047,Library 1047: 2 x 14 x 60c-10.2A (3 bypass),60,3,2,14,10.191827819914558,False,std
+1048,"Library 1048: 1 x 5 x 60c-5.1A (3 bypass, mixed modules)",60,3,1,5,5.076002042008193,True,std
+1049,Library 1049: 1 x 14 x 72c-9.4A (3 bypass),72,3,1,14,9.420956687923528,False,std
+1050,Library 1050: 3 x 16 x 72c-5.3A (3 bypass),72,3,3,16,5.306599406936264,False,std
+1051,"Library 1051: 2 x 5 x 60c-9.9A (3 bypass, mixed modules)",60,3,2,5,9.94799341126698,True,std
+1052,"Library 1052: 1 x 6 x 72c-9.4A (3 bypass, mixed modules)",72,3,1,6,9.431137109639963,True,std
+1053,Library 1053: 1 x 18 x 60c-10.3A (3 bypass),60,3,1,18,10.282094857038437,False,std
+1054,Library 1054: 1 x 4 x 36c-2.9A (0 bypass),36,0,1,4,2.8900101703086447,False,small
+1055,Library 1055: 2 x 7 x 60c-7.3A (3 bypass),60,3,2,7,7.3100269095303805,False,std
+1056,Library 1056: 1 x 14 x 72c-6.3A (3 bypass),72,3,1,14,6.282689645936752,False,std
+1057,Library 1057: 1 x 9 x 36c-3.4A (2 bypass),36,2,1,9,3.447862663856248,False,36c
+1058,Library 1058: 2 x 5 x 36c-4.6A (0 bypass),36,0,2,5,4.577327415890284,False,small
+1059,Library 1059: 1 x 3 x 36c-0.4A (0 bypass),36,0,1,3,0.39512998452899195,False,small
+1060,Library 1060: 1 x 18 x 72c-6.5A (3 bypass),72,3,1,18,6.517437536115407,False,std
+1061,Library 1061: 2 x 10 x 60c-6.7A (3 bypass),60,3,2,10,6.66929580142601,False,std
+1062,"Library 1062: 3 x 6 x 60c-5.3A (3 bypass, mixed modules)",60,3,3,6,5.295703766902279,True,std
+1063,Library 1063: 2 x 17 x 60c-10.2A (3 bypass),60,3,2,17,10.166148253775887,False,std
+1064,"Library 1064: 1 x 4 x 60c-6.5A (3 bypass, mixed modules)",60,3,1,4,6.532958499767463,True,std
+1065,Library 1065: 2 x 11 x 36c-3.0A (2 bypass),36,2,2,11,3.003221754092005,False,36c
+1066,Library 1066: 3 x 1 x 36c-2.9A (0 bypass),36,0,3,1,2.9010686924323177,False,small
+1067,"Library 1067: 1 x 8 x 72c-8.3A (3 bypass, mixed modules)",72,3,1,8,8.321856241022253,True,std
+1068,Library 1068: 1 x 13 x 72c-10.7A (3 bypass),72,3,1,13,10.7214332788849,False,std
+1069,Library 1069: 2 x 12 x 60c-9.2A (3 bypass),60,3,2,12,9.237170681279018,False,std
+1070,"Library 1070: 3 x 12 x 72c-11.5A (3 bypass, mixed modules)",72,3,3,12,11.475069755074848,True,std
+1071,"Library 1071: 3 x 8 x 72c-5.0A (3 bypass, mixed modules)",72,3,3,8,5.04953488853898,True,std
+1072,Library 1072: 1 x 12 x 60c-7.0A (3 bypass),60,3,1,12,7.017030159122626,False,std
+1073,Library 1073: 1 x 8 x 36c-6.8A (2 bypass),36,2,1,8,6.79265021213307,False,36c
+1074,Library 1074: 3 x 9 x 72c-10.0A (3 bypass),72,3,3,9,9.962514056870031,False,std
+1075,Library 1075: 2 x 15 x 72c-6.6A (3 bypass),72,3,2,15,6.6258464725456,False,std
+1076,Library 1076: 2 x 1 x 36c-4.9A (0 bypass),36,0,2,1,4.895592261511878,False,small
+1077,"Library 1077: 1 x 5 x 72c-9.9A (3 bypass, mixed modules)",72,3,1,5,9.8653053703741,True,std
+1078,Library 1078: 1 x 13 x 60c-8.5A (3 bypass),60,3,1,13,8.496823924279727,False,std
+1079,Library 1079: 2 x 4 x 36c-2.9A (0 bypass),36,0,2,4,2.8797092574364407,False,small
+1080,Library 1080: 1 x 7 x 72c-10.8A (3 bypass),72,3,1,7,10.769894344319578,False,std
+1081,"Library 1081: 1 x 20 x 60c-5.1A (3 bypass, mixed modules)",60,3,1,20,5.074334348067029,True,std
+1082,"Library 1082: 1 x 16 x 60c-9.5A (3 bypass, mixed modules)",60,3,1,16,9.454992415105337,True,std
+1083,Library 1083: 1 x 6 x 36c-3.8A (2 bypass),36,2,1,6,3.831123402725546,False,36c
+1084,"Library 1084: 1 x 4 x 36c-4.1A (2 bypass, mixed modules)",36,2,1,4,4.088148252723422,True,36c
+1085,"Library 1085: 3 x 4 x 36c-3.8A (0 bypass, mixed modules)",36,0,3,4,3.800543650824994,True,small
+1086,Library 1086: 2 x 1 x 36c-2.0A (0 bypass),36,0,2,1,1.9925020946180791,False,small
+1087,"Library 1087: 1 x 4 x 36c-6.6A (2 bypass, mixed modules)",36,2,1,4,6.589720509705629,True,36c
+1088,Library 1088: 1 x 8 x 60c-5.8A (3 bypass),60,3,1,8,5.750571693661225,False,std
+1089,"Library 1089: 1 x 14 x 60c-8.0A (3 bypass, mixed modules)",60,3,1,14,8.002977508894833,True,std

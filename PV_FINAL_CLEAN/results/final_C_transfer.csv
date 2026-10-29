@@ -1,0 +1,148 @@
+model,variant,test,Accuracy
+SVM (paper),base,zero-shot: sim System 2,0.66
+SVM (paper),base,few-shot k=5: sim System 2,0.8972972972972973
+SVM (paper),base,few-shot k=5: sim System 2,0.972972972972973
+SVM (paper),base,few-shot k=5: sim System 2,0.9783783783783784
+SVM (paper),base,few-shot k=5: sim System 2,0.9783783783783784
+SVM (paper),base,few-shot k=5: sim System 2,0.9837837837837838
+SVM (paper),base,few-shot k=10: sim System 2,0.9941176470588236
+SVM (paper),base,few-shot k=10: sim System 2,0.9411764705882353
+SVM (paper),base,few-shot k=10: sim System 2,0.9941176470588236
+SVM (paper),base,few-shot k=10: sim System 2,0.9647058823529412
+SVM (paper),base,few-shot k=10: sim System 2,0.9882352941176471
+RF (paper),base,zero-shot: sim System 2,0.785
+RF (paper),base,few-shot k=5: sim System 2,0.8918918918918919
+RF (paper),base,few-shot k=5: sim System 2,0.9621621621621622
+RF (paper),base,few-shot k=5: sim System 2,0.972972972972973
+RF (paper),base,few-shot k=5: sim System 2,0.8810810810810811
+RF (paper),base,few-shot k=5: sim System 2,0.972972972972973
+RF (paper),base,few-shot k=10: sim System 2,0.9588235294117647
+RF (paper),base,few-shot k=10: sim System 2,0.9470588235294117
+RF (paper),base,few-shot k=10: sim System 2,1.0
+RF (paper),base,few-shot k=10: sim System 2,0.9941176470588236
+RF (paper),base,few-shot k=10: sim System 2,0.9823529411764705
+DT (paper),base,zero-shot: sim System 2,0.695
+DT (paper),base,few-shot k=5: sim System 2,0.6162162162162163
+DT (paper),base,few-shot k=5: sim System 2,0.7945945945945946
+DT (paper),base,few-shot k=5: sim System 2,0.9081081081081082
+DT (paper),base,few-shot k=5: sim System 2,0.772972972972973
+DT (paper),base,few-shot k=5: sim System 2,0.8324324324324325
+DT (paper),base,few-shot k=10: sim System 2,0.9
+DT (paper),base,few-shot k=10: sim System 2,0.888235294117647
+DT (paper),base,few-shot k=10: sim System 2,0.9705882352941176
+DT (paper),base,few-shot k=10: sim System 2,0.9411764705882353
+DT (paper),base,few-shot k=10: sim System 2,0.8705882352941177
+LR (paper),base,zero-shot: sim System 2,0.8
+LR (paper),base,few-shot k=5: sim System 2,0.9837837837837838
+LR (paper),base,few-shot k=5: sim System 2,0.9621621621621622
+LR (paper),base,few-shot k=5: sim System 2,0.9837837837837838
+LR (paper),base,few-shot k=5: sim System 2,0.9027027027027027
+LR (paper),base,few-shot k=5: sim System 2,0.9945945945945946
+LR (paper),base,few-shot k=10: sim System 2,0.9823529411764705
+LR (paper),base,few-shot k=10: sim System 2,0.9647058823529412
+LR (paper),base,few-shot k=10: sim System 2,0.9705882352941176
+LR (paper),base,few-shot k=10: sim System 2,0.9764705882352941
+LR (paper),base,few-shot k=10: sim System 2,1.0
+SVM (tuned),base,zero-shot: sim System 2,0.805
+SVM (tuned),base,few-shot k=5: sim System 2,0.9945945945945946
+SVM (tuned),base,few-shot k=5: sim System 2,0.9891891891891892
+SVM (tuned),base,few-shot k=5: sim System 2,0.9783783783783784
+SVM (tuned),base,few-shot k=5: sim System 2,0.8864864864864865
+SVM (tuned),base,few-shot k=5: sim System 2,0.9783783783783784
+SVM (tuned),base,few-shot k=10: sim System 2,0.9705882352941176
+SVM (tuned),base,few-shot k=10: sim System 2,0.9941176470588236
+SVM (tuned),base,few-shot k=10: sim System 2,0.9941176470588236
+SVM (tuned),base,few-shot k=10: sim System 2,1.0
+SVM (tuned),base,few-shot k=10: sim System 2,0.9941176470588236
+XGBoost (tuned),base,zero-shot: sim System 2,0.8
+XGBoost (tuned),base,few-shot k=5: sim System 2,0.9567567567567568
+XGBoost (tuned),base,few-shot k=5: sim System 2,0.8918918918918919
+XGBoost (tuned),base,few-shot k=5: sim System 2,0.8810810810810811
+XGBoost (tuned),base,few-shot k=5: sim System 2,0.8216216216216217
+XGBoost (tuned),base,few-shot k=5: sim System 2,0.9837837837837838
+XGBoost (tuned),base,few-shot k=10: sim System 2,0.9705882352941176
+XGBoost (tuned),base,few-shot k=10: sim System 2,0.8647058823529412
+XGBoost (tuned),base,few-shot k=10: sim System 2,0.9764705882352941
+XGBoost (tuned),base,few-shot k=10: sim System 2,0.9764705882352941
+XGBoost (tuned),base,few-shot k=10: sim System 2,0.9823529411764705
+SVM (paper),iscg,zero-shot: sim System 2,0.895
+SVM (paper),iscg,few-shot k=5: sim System 2,0.8972972972972973
+SVM (paper),iscg,few-shot k=5: sim System 2,0.9945945945945946
+SVM (paper),iscg,few-shot k=5: sim System 2,0.9837837837837838
+SVM (paper),iscg,few-shot k=5: sim System 2,0.9837837837837838
+SVM (paper),iscg,few-shot k=5: sim System 2,0.9675675675675676
+SVM (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+SVM (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+SVM (paper),iscg,few-shot k=10: sim System 2,1.0
+SVM (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+SVM (paper),iscg,few-shot k=10: sim System 2,0.9823529411764705
+RF (paper),iscg,zero-shot: sim System 2,0.805
+RF (paper),iscg,few-shot k=5: sim System 2,0.9891891891891892
+RF (paper),iscg,few-shot k=5: sim System 2,0.9783783783783784
+RF (paper),iscg,few-shot k=5: sim System 2,0.9945945945945946
+RF (paper),iscg,few-shot k=5: sim System 2,0.9081081081081082
+RF (paper),iscg,few-shot k=5: sim System 2,0.9945945945945946
+RF (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+RF (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+RF (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+RF (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+RF (paper),iscg,few-shot k=10: sim System 2,0.9941176470588236
+DT (paper),iscg,zero-shot: sim System 2,0.775
+DT (paper),iscg,few-shot k=5: sim System 2,0.9567567567567568
+DT (paper),iscg,few-shot k=5: sim System 2,0.9567567567567568
+DT (paper),iscg,few-shot k=5: sim System 2,0.9405405405405406
+DT (paper),iscg,few-shot k=5: sim System 2,0.9297297297297298
+DT (paper),iscg,few-shot k=5: sim System 2,0.9405405405405406
+DT (paper),iscg,few-shot k=10: sim System 2,0.9411764705882353
+DT (paper),iscg,few-shot k=10: sim System 2,0.9411764705882353
+DT (paper),iscg,few-shot k=10: sim System 2,0.9705882352941176
+DT (paper),iscg,few-shot k=10: sim System 2,0.9352941176470588
+DT (paper),iscg,few-shot k=10: sim System 2,0.9294117647058824
+LR (paper),iscg,zero-shot: sim System 2,0.8
+LR (paper),iscg,few-shot k=5: sim System 2,0.9837837837837838
+LR (paper),iscg,few-shot k=5: sim System 2,0.9621621621621622
+LR (paper),iscg,few-shot k=5: sim System 2,0.9837837837837838
+LR (paper),iscg,few-shot k=5: sim System 2,0.9135135135135135
+LR (paper),iscg,few-shot k=5: sim System 2,1.0
+LR (paper),iscg,few-shot k=10: sim System 2,0.9882352941176471
+LR (paper),iscg,few-shot k=10: sim System 2,0.9470588235294117
+LR (paper),iscg,few-shot k=10: sim System 2,0.9588235294117647
+LR (paper),iscg,few-shot k=10: sim System 2,0.9705882352941176
+LR (paper),iscg,few-shot k=10: sim System 2,1.0
+SVM (tuned),iscg,zero-shot: sim System 2,0.8
+SVM (tuned),iscg,few-shot k=5: sim System 2,0.9945945945945946
+SVM (tuned),iscg,few-shot k=5: sim System 2,0.9783783783783784
+SVM (tuned),iscg,few-shot k=5: sim System 2,0.9891891891891892
+SVM (tuned),iscg,few-shot k=5: sim System 2,0.8810810810810811
+SVM (tuned),iscg,few-shot k=5: sim System 2,0.9891891891891892
+SVM (tuned),iscg,few-shot k=10: sim System 2,0.9823529411764705
+SVM (tuned),iscg,few-shot k=10: sim System 2,0.9941176470588236
+SVM (tuned),iscg,few-shot k=10: sim System 2,0.9941176470588236
+SVM (tuned),iscg,few-shot k=10: sim System 2,1.0
+SVM (tuned),iscg,few-shot k=10: sim System 2,1.0
+XGBoost (tuned),iscg,zero-shot: sim System 2,0.805
+XGBoost (tuned),iscg,few-shot k=5: sim System 2,1.0
+XGBoost (tuned),iscg,few-shot k=5: sim System 2,0.9945945945945946
+XGBoost (tuned),iscg,few-shot k=5: sim System 2,0.9945945945945946
+XGBoost (tuned),iscg,few-shot k=5: sim System 2,0.9837837837837838
+XGBoost (tuned),iscg,few-shot k=5: sim System 2,1.0
+XGBoost (tuned),iscg,few-shot k=10: sim System 2,1.0
+XGBoost (tuned),iscg,few-shot k=10: sim System 2,0.9823529411764705
+XGBoost (tuned),iscg,few-shot k=10: sim System 2,1.0
+XGBoost (tuned),iscg,few-shot k=10: sim System 2,1.0
+XGBoost (tuned),iscg,few-shot k=10: sim System 2,1.0
+ANN (tuned),chosen,zero-shot: sim System 2,0.675
+ANN (tuned),chosen,zero-shot: sim System 2,0.75
+ANN (tuned),chosen,zero-shot: sim System 2,0.72
+ANN (tuned),chosen,zero-shot: sim System 2,0.69
+ANN (tuned),chosen,zero-shot: sim System 2,0.645
+ANN (tuned),chosen,few-shot k=5: sim System 2,0.9675675675675676
+ANN (tuned),chosen,few-shot k=5: sim System 2,0.9783783783783784
+ANN (tuned),chosen,few-shot k=5: sim System 2,0.6702702702702703
+ANN (tuned),chosen,few-shot k=5: sim System 2,0.9621621621621622
+ANN (tuned),chosen,few-shot k=5: sim System 2,0.9675675675675676
+ANN (tuned),chosen,few-shot k=10: sim System 2,0.9529411764705882
+ANN (tuned),chosen,few-shot k=10: sim System 2,0.9352941176470588
+ANN (tuned),chosen,few-shot k=10: sim System 2,0.9882352941176471
+ANN (tuned),chosen,few-shot k=10: sim System 2,0.9764705882352941
+ANN (tuned),chosen,few-shot k=10: sim System 2,0.9764705882352941
